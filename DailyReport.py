@@ -1,4 +1,4 @@
-# Create an email Form based on day's Calendar Events. 
+# Create an email Form based on day's Calendar Events.
 
 import httplib2
 import os
@@ -7,6 +7,8 @@ from apiclient import discovery
 import oauth2client
 from oauth2client import client
 from oauth2client import tools
+
+import form
 
 import datetime
 
@@ -45,7 +47,7 @@ def main():
         start = event['start'].get('dateTime', event['start'].get('date'))
         print start, event['summary']
 	'''
-	form = Form(events)
+	form = formForm(events)
 	## print form
 	# save form to clipboard or file
 
@@ -79,151 +81,13 @@ def get_credentials():
     return credentials
 
 
-class Form:
-	def __init__(self, events):
-		form = self.setForm(events)
-	
-	def form(self, events):
-		jobs = self.setJobs(events)
-		dailyTotal = self.setDailyTotal(jobs)
-		hours = self.setHours(jobs)
-		form = [jobs, dailyTotal, hours]
-		return form
-
-	def setJobs(self, events):
-		jobs = []
-		for event in events["items"]:
-			jobs.append(new Job(event))
-		return jobs		
-		
-	def setDailyTotal(self, jobs):
-		total = 0
-		for job in jobs:
-			total += job.subTotal
-		return total
-	
-	def setHours(self, jobs):
-		dayStartTime = setDayStartTime()
-		dayEndTime = setDayEndTime()
-		hours = [dayStartTime, dayEndTime]
-		return hours
-
-	def setDayStartHours(self, jobs):
-		dayStartTime = None
-		for job in jobs
-			if dayStartTime == None:
-				dayStartTime = job.start
-			elif job.start < dayStartTime:
-				dayStartTime = job.start
-			else:
-				pass
-		
-	def setDayEndHours(self):
-		dayEndTime = None
-		for job in jobs:
-			if dayEndTime == None:
-				dayEndTime = job.end
-			elif job.end > dayEndTime:
-				dayEndTime = job.end
-			else:
-				pass
-			
-	def copyToClipboard(self):
-		#pyperClip self.form to clipboard
-	
-	def saveFormToFile(self):
-		#os.newFile self.form to new file
-
-		
-class Job:	
-	def __init__ (self, event):
-		self.name = self.setName(event)
-		self.tasks = self.setTasks(event)
-		self.subTotal = self.setSubtotal(event)
-		self.tax = self.setTax(event)
-		self.start = self.setStartTime(event)
-		self.end = self.setEndTime(event)
-		# self.date = self.setDate
-
-	def setName(self, event):
-		name = event.get("id")
-		return name
-		
-	def setTasks(self, event):
-		tasks = []
-		keywords = ['in/out skylight glass rail screen pw scrub gutter roof debris moss']
-		for line in event.get("description"):
-			if line has keyword and has price:
-				tasks.append(task(line))
-		return tasks
-
-	def setSubtotal(self, event):
-		subTotal = 0
-		for task in tasks[]:
-			if task is not tip && task is not taxable:
-					subTotal += task.price
-
-	def setTaxOwed(self, event):
-		tax = 0
-		if task is taxable:
-		tax += task.price
-		location = event.get("location")
-		if location is not WS:
-			locationMultiplier = 0.95
-		else:  location is MI or BE
-		locationMultiplier = 0.96
-		tax *= locationMultiplier
-		self.taxOwed = tax
-
-	def setStartTime(self, event):
-		startTime = event.get("start")
-		return startTime
-		
-	def setEndTime(self, event):
-		endTime = event.get("end")
-		return endTime
-		
-	def setDate(self, event):
-		date = event.date
-		return date
 
 
-class Task:
-	price = find Int in description
-	variety = [windows, pw, roof, tip]
-	
-	tax = 0
 
-	def init (self, description):
-		self.name = extractNameFromDescription()
-		self.price = extractPriceFromDescription()
-		self.type = setType()
-		self.tax = setTax()
-		
-	def setTax(self, description):
-		taxable = False
-		if variety is not windows and not tip:
-			taxable = True
-		else:
-			taxable = False
-			
-		taxRate = taxRateFromLocation()
-		if taxable == True:
-			taxMultiplier = taxRate
-			tax = (price * taxMultiplier)
-		else:
-			tax = 0
-			
-		return tax
-		
-	def taxRateFromLocation():
-		if location == WestSeattle:
-			taxRate = 0.96
-		elif location == MercerIsland:
-			taxRate = 0.95
-		elif location == Bellevue:
-			taxRate = 0.95
-		return taxRate
+
+
+
+
 
 
 if __name__ == '__main__':

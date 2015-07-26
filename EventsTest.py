@@ -34,8 +34,8 @@ def main():
     if not events:
         print 'No upcoming events found.'
     for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print start, event['summary']
+        for e in event['description'].split('\n'):
+            print e
 
 
 def get_credentials():
@@ -53,7 +53,7 @@ def get_credentials():
         flow.user_agent = APPLICATION_NAME
         if flags:
             credentials = tools.run_flow(flow, store, flags)
-        else: 
+        else:
             credentials = tools.run(flow, store)
         print 'Storing credentials to ' + credential_path
     return credentials
