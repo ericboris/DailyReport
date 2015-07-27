@@ -3,38 +3,28 @@ Parses a Task object out of a description string
 '''
 
 class Task:
-	price = find Int in description
-	variety = [windows, pw, roof, tip]
+	def __init__ (self, description):
+		self.title = self.get_title(description)
+		self.price = self.get_price(description)
+		self.taxable = self.is_taxable()
 
-	tax = 0
+	def get_title(self, description):
+		title = ''.join(i for i in description if not i.isdigit()).strip()
+		return str(title)
 
-	def init (self, description):
-		self.name = extractNameFromDescription()
-		self.price = extractPriceFromDescription()
-		self.type = setType()
-		self.tax = setTax()
+	def get_price(self, description):
+		price = ''.join(i for i in description if not i.isalpha()).strip()
+		# needs a more elegant way to check if task is actually a note
+		if price == '':
+			return 0
+		return int(price)
 
-	def setTax(self, description):
-		taxable = False
-		if variety is not windows and not tip:
-			taxable = True
+	def is_taxable(self):
+		non_taxable_tasks = ['window', 'windows', 'skylight', 'skylights', 'note',
+			'glass', 'mirror', 'mirrors', 'in/out', 'in/ext', 'in out', 'in ext']
+		if any(task in self.title for task in non_taxable_tasks):
+			# task is not taxable
+			return False
 		else:
-			taxable = False
-
-		taxRate = taxRateFromLocation()
-		if taxable == True:
-			taxMultiplier = taxRate
-			tax = (price * taxMultiplier)
-		else:
-			tax = 0
-
-		return tax
-
-	def taxRateFromLocation():
-		if location == WestSeattle:
-			taxRate = 0.96
-		elif location == MercerIsland:
-			taxRate = 0.95
-		elif location == Bellevue:
-			taxRate = 0.95
-		return taxRate
+			# task is taxable
+			return True

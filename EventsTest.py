@@ -33,10 +33,11 @@ def main():
 
     if not events:
         print 'No upcoming events found.'
+    eventList = []
     for event in events:
-        for e in event['description'].split('\n'):
-            print e
-
+        eventList.append(event)
+    print eventList
+    print '\n'
 
 def get_credentials():
     home_dir = os.path.expanduser('~')

@@ -1,26 +1,46 @@
+from job import Job
+
 class Form:
 	def __init__(self, events):
-		form = self.setForm(events)
+		self.jobs = self.get_jobs(events)
+		self.dayTotal = self.get_day_total()
+		self.form = self.get_form()
 
-	def form(self, events):
-		jobs = self.setJobs(events)
-		dailyTotal = self.setDailyTotal(jobs)
-		hours = self.setHours(jobs)
-		form = [jobs, dailyTotal, hours]
+	def get_form(self):
+		form = ''
+		for job in self.jobs:
+			name = str(job.name)
+			tasks = ''
+		    for task in job.tasks:
+		    	task = str(task.title) + str(task.price) + '\n'
+				tasks += task
+		'''
+		    subtotal = str(job.subtotal) + '\n'
+		    if job.tax != 0:
+				tax = str(job.tax) + '\n'
+			else:
+				tax = ''
+		    total = str(job.total) + '\n'
+			job = name + tasks + subtotal + tax + total
+			form += job
+		#hours = self.setHours(jobs)
+		#form = [self.jobs, self.dayTotal]
 		return form
+		'''
 
-	def setJobs(self, events):
+	def get_jobs(self, events):
 		jobs = []
-		for event in events["items"]:
-			jobs.append(new Job(event))
+		for event in events:
+		    j = Job(event)
+		    jobs.append(j)
 		return jobs
 
-	def setDailyTotal(self, jobs):
-		total = 0
-		for job in jobs:
-			total += job.subTotal
-		return total
-
+	def get_day_total(self):
+		dayTotal = 0
+		for job in self.jobs:
+			dayTotal += job.subtotal
+		return dayTotal
+'''
 	def setHours(self, jobs):
 		dayStartTime = setDayStartTime()
 		dayEndTime = setDayEndTime()
@@ -52,3 +72,4 @@ class Form:
 
 	def saveFormToFile(self):
 		#os.newFile self.form to new file
+'''

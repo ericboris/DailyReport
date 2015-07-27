@@ -1,51 +1,44 @@
+from task import Task
+
 class Job:
 	def __init__ (self, event):
-		self.name = self.setName(event)
-		self.tasks = self.setTasks(event)
-		self.subTotal = self.setSubtotal(event)
-		self.tax = self.setTax(event)
-		self.start = self.setStartTime(event)
-		self.end = self.setEndTime(event)
+		self.name = self.get_name(event)
+		self.tasks = self.get_tasks(event)
+		self.subtotal = self.get_subtotal()
+		self.tax = self.get_tax()
+		self.total = self.get_total()
+		#self.start = self.setStartTime(event)
+		#self.end = self.setEndTime(event)
 		# self.date = self.setDate
 
-	def setName(self, event):
-		name = event.get("id")
+	def get_name(self, event):
+		name = str(event.get('summary'))
 		return name
 
-	def setTasks(self, event):
+	def get_tasks(self, event):
 		tasks = []
-		keywords = ['in/out skylight glass rail screen pw scrub gutter roof debris moss']
-		for line in event.get("description"):
-			if line has keyword and has price:
-				tasks.append(task(line))
+		events_list = event.get('description').splitlines()
+		for line in events_list:
+			task = Task(line)
+			tasks.append(task)
 		return tasks
 
-	def setSubtotal(self, event):
-		subTotal = 0
-		for task in tasks[]:
-			if task is not tip && task is not taxable:
-					subTotal += task.price
+	def get_subtotal(self):
+		subtotal = 0
+		for task in self.tasks:
+			subtotal += task.price
+		return subtotal
 
-	def setTaxOwed(self, event):
-		tax = 0
-		if task is taxable:
-		tax += task.price
-		location = event.get("location")
-		if location is not WS:
-			locationMultiplier = 0.95
-		else:  location is MI or BE
-		locationMultiplier = 0.96
-		tax *= locationMultiplier
-		self.taxOwed = tax
+	def get_tax(self):
+		taxableTasks = 0
+		for task in self.tasks:
+			if task.taxable:
+				taxableTasks += task.price
+				#location = event.get("location")
+		taxRate = 0.096
+		tax = round(taxableTasks * taxRate, 2)
+		return tax
 
-	def setStartTime(self, event):
-		startTime = event.get("start")
-		return startTime
-
-	def setEndTime(self, event):
-		endTime = event.get("end")
-		return endTime
-
-	def setDate(self, event):
-		date = event.date
-		return date
+	def get_total(self):
+		total = self.subtotal + self.tax
+		return total
