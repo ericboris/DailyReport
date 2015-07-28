@@ -10,23 +10,31 @@ class Form:
 		form = ''
 		for job in self.jobs:
 			name = str(job.name)
-			tasks = ''
-		    for task in job.tasks:
-		    	task = str(task.title) + str(task.price) + '\n'
-				tasks += task
-		'''
-		    subtotal = str(job.subtotal) + '\n'
-		    if job.tax != 0:
-				tax = str(job.tax) + '\n'
+
+			tasksLocal = []
+			for t in job.tasks:
+				tasksLocal.append(t.title + ' ' + str(t.price))
+			tasks = '\n'.join(tasksLocal)
+
+			subtotal = 'subtotal ' + str(job.subtotal)
+
+			if job.tax != 0:
+				tax = 'tax ' + str(job.tax)
 			else:
 				tax = ''
-		    total = str(job.total) + '\n'
-			job = name + tasks + subtotal + tax + total
+
+			total = 'total ' + str(job.total)
+
+			job = [name, tasks, subtotal, tax, total]
+			job = '\n'.join(job) + '\n'*2
 			form += job
-		#hours = self.setHours(jobs)
-		#form = [self.jobs, self.dayTotal]
+
+		form += 'total w/o tax ' + str(self.dayTotal)
+		form += '\n'*2
+		form += 'hours '
+		form += '\n'*2
+
 		return form
-		'''
 
 	def get_jobs(self, events):
 		jobs = []
