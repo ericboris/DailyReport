@@ -18,7 +18,6 @@ class Task:
 		try:
 			price = int(re.search(r'\d+', description).group())
 		except AttributeError:
-			#if price == '':
 			price = 0
 		return int(price)
 

@@ -1,4 +1,5 @@
 from task import Task
+import re
 
 class Job:
 	def __init__ (self, event):
@@ -22,9 +23,11 @@ class Job:
 		except AttributeError:
 			return ''
 		for line in events_list:
-			if len(line) > 0:
-				task = Task(line)
-				tasks.append(task)
+			tel_num = re.compile(".*?(\(?\d{3}\D{0,3}\d{3}\D{0,3}\d{4}).*?", re.S) # telepone number
+			if len(line) <= 0 or tel_num.match(line):
+				continue
+			task = Task(line)
+			tasks.append(task)
 		return tasks
 
 	def get_subtotal(self):
