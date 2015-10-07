@@ -17,7 +17,10 @@ class Job:
 
 	def get_tasks(self, event):
 		tasks = []
-		events_list = event.get('description').splitlines()
+		try:
+			events_list = event.get('description').splitlines()
+		except AttributeError:
+			return ''
 		for line in events_list:
 			task = Task(line)
 			tasks.append(task)

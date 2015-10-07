@@ -1,4 +1,6 @@
-from calendarEvent import get_days_events
+#!/usr/local/bin/python
+
+import calendarEvent
 from form import Form
 import os
 import pyperclip
@@ -6,7 +8,7 @@ import pyperclip
 # Create an email Form based on day's Calendar Events.
 
 def main():
-    events = get_days_events()
+    events = calendarEvent.get_days_events()
     f = Form(events)
     # copy f.form to clipboard
     print f.form

@@ -27,6 +27,7 @@ def get_days_events():
     #now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     #print now
     today = datetime.datetime.today()
+    #yesterday = datetime.now - timedelta(days=1)
     thisMorning = today.replace(hour=00, minute=00, second=01).isoformat() + 'Z'
     thisEvening = today.replace(hour=23, minute=59, second=59).isoformat() + 'Z'
     eventsResult = service.events().list(

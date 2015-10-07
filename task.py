@@ -2,6 +2,8 @@
 Parses a Task object out of a description string
 '''
 
+import re
+
 class Task:
 	def __init__ (self, description):
 		self.title = self.get_title(description)
@@ -13,10 +15,17 @@ class Task:
 		return str(title)
 
 	def get_price(self, description):
-		price = ''.join(i for i in description if not i.isalpha()).strip()
-		# needs a more elegant way to check if task is actually a note
-		if price == '':
+		#for keyword in keywords:
+		#	if keyword in description:
+		try:
+			price = int(re.search(r'\d+', description).group())
+		except AttributeError:
+			#if price == '':
 			return 0
+		#		break
+		# needs a more elegant way to check if task is actually a note
+		#if price == '':
+		#	return 0
 		return int(price)
 
 	def is_taxable(self):
@@ -28,3 +37,7 @@ class Task:
 		else:
 			# task is taxable
 			return True
+
+	keywords = ['window', 'in ext', 'ext', 'out', 'in out', 'skylight' 'note',
+		'glass', 'rail', 'mirror', 'gutter', 'roof', 'moss', 'debris', 'scrub',
+		'pressure', 'wash', 'pw', 'setup', 'set up', 'fb', 'facebook', 'ad']
