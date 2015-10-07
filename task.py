@@ -15,17 +15,11 @@ class Task:
 		return str(title)
 
 	def get_price(self, description):
-		#for keyword in keywords:
-		#	if keyword in description:
 		try:
 			price = int(re.search(r'\d+', description).group())
 		except AttributeError:
 			#if price == '':
-			return 0
-		#		break
-		# needs a more elegant way to check if task is actually a note
-		#if price == '':
-		#	return 0
+			price = 0
 		return int(price)
 
 	def is_taxable(self):

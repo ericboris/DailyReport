@@ -22,8 +22,9 @@ class Job:
 		except AttributeError:
 			return ''
 		for line in events_list:
-			task = Task(line)
-			tasks.append(task)
+			if len(line) > 0:
+				task = Task(line)
+				tasks.append(task)
 		return tasks
 
 	def get_subtotal(self):
