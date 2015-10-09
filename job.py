@@ -24,6 +24,9 @@ class Job:
 			return ''
 		for line in events_list:
 			tel_num = re.compile(".*?(\(?\d{3}\D{0,3}\d{3}\D{0,3}\d{4}).*?", re.S) # telepone number
+			keywords = ['window', 'in ext', 'ext', 'out', 'in out', 'skylight' 'note',
+				'glass', 'rail', 'mirror', 'gutter', 'roof', 'moss', 'debris', 'scrub',
+				'pressure', 'wash', 'pw', 'setup', 'set up', 'fb', 'facebook', 'ad', 'windows']
 			if len(line) <= 0 or tel_num.match(line):
 				continue
 			task = Task(line)
