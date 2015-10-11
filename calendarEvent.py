@@ -27,12 +27,11 @@ def get_days_events():
     #now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     #print now
     today = datetime.datetime.today()
-    #yesterday = datetime.now - timedelta(days=1)
-    thisMorning = today.replace(hour=00, minute=00, second=01).isoformat() + 'Z'
-    thisEvening = today.replace(hour=23, minute=59, second=59).isoformat() + 'Z'
+    dayStart = get_work_day()
+    dayEnd = today.replace(hour=23, minute=59, second=59).isoformat() + 'Z'
     eventsResult = service.events().list(
-        calendarId='primary', timeMin=thisMorning, singleEvents=True,
-        orderBy='startTime', timeMax=thisEvening).execute()
+        calendarId='primary', timeMin=dayStart, singleEvents=True,
+        orderBy='startTime', timeMax=dayEnd).execute()
     events = eventsResult.get('items', [])
 
     if not events:
@@ -68,6 +67,10 @@ def get_credentials():
         print 'Storing credentials to ' + credential_path
     return credentials
 
+def get_work_day():
+    today = datetime.datetime.today()
+    dayStart = today.replace(hour=00, minute=00, second=01).isoformat() + 'Z'
+    return dayStart
 
 if __name__ == '__main__':
     main()
