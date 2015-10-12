@@ -34,7 +34,17 @@ def get_jobs(events):
             'total': job_total}
         jobs.append(job)
     for job in jobs:
-        print job['name'], job['tasks'], job['subtotal'], job['tax'], job['total']
+        print job['name']
+        if len(job['tasks']) >= 0:
+            for task in job['tasks']:
+                print task
+        if len(job['tasks']) > 1:
+            print 'subtotal ', job['subtotal']
+        if job['tax'] > 0:
+            print 'tax ', job['tax']
+        if job['total'] > 0:
+            print 'total', job['total']
+        print '\n'
 
 
 def get_job_name(event):
@@ -47,22 +57,24 @@ def get_job_tasks(event):
         pass
     tasks = []
     for task in events_list:
-        tast = str(task)
+        task = str(task)
         # progressively filter each line in events into tasks
-        # first remove empty lines
+        # remove empty lines
         if len(task) <= 0:
             continue
-        # next remove telephone numbers
-        tel_num = re.compile(".*?(\(?\d{3}\D{0,3}\d{3}\D{0,3}\d{4}).*?", re.S) # telepone number
-        if tel_num.match(task):
-            continue
-        # next remove lines not containing keywords
+        # filtering out for keywords seems to implicitly filter telephone numbers as well
+        # remove telephone numbers
+        #tel_num = re.compile(".*?(\(?\d{3}\D{0,3}\d{3}\D{0,3}\d{4}).*?", re.S) # telepone number
+        #if tel_num.match(task):
+        #    continue
+        # remove lines not containing keywords
         task_keywords = ['window', 'windows', 'int', 'ext', 'out', 'skylight' 'note',
             'glass', 'rail', 'mirror', 'gutter', 'roof', 'moss', 'debris', 'scrub',
     	    'pressure', 'wash', 'pw', 'setup', 'set up', 'fb', 'facebook', 'ad']
         keywords = re.compile('|'.join(task_keywords))
         if not keywords.search(task):
             continue
+        # if the line is not blank and contains a keyword
         tasks.append(str(task))
     return tasks
 
@@ -78,18 +90,24 @@ def create_job_subtotal(tasks):
 
 def create_job_tax(tasks):
     tax = 0
+    non_taxable_tasks = ['window', 'windows', 'skylight', 'skylights', 'note',
+        'glass', 'mirror', 'mirrors', 'in/out', 'in/ext', 'int', 'ext', 'tax']
     for task in tasks:
+        # remove non taxable tasks
+        keywords = re.compile('|'.join(non_taxable_tasks))
+        if keywords.search(task):
+            continue
         try:
             price = int(re.search(r'\d+', task).group())
             tax += price
         except:
             pass
     taxRate = 0.096
-    return round(tax * taxRate, 2)
+    tax *= taxRate
+    return round(tax, 2)
 
 def create_job_total(subtotal, tax):
     return subtotal + tax
-
 
 if __name__ == "__main__":
     main()
