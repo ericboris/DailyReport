@@ -8,6 +8,7 @@ from oauth2client import tools
 
 import datetime
 
+
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -24,10 +25,8 @@ def get_days_events():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    #now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    #print now
-    today = datetime.datetime.today()
-    dayStart = get_work_day()
+    today = datetime.datetime.today() - datetime.timedelta(days=0)
+    dayStart = today.replace(hour=00, minute=00, second=01).isoformat() + 'Z'
     dayEnd = today.replace(hour=23, minute=59, second=59).isoformat() + 'Z'
     eventsResult = service.events().list(
         calendarId='primary', timeMin=dayStart, singleEvents=True,
@@ -68,8 +67,6 @@ def get_credentials():
     return credentials
 
 def get_work_day():
-    today = datetime.datetime.today()
-    dayStart = today.replace(hour=00, minute=00, second=01).isoformat() + 'Z'
     return dayStart
 
 if __name__ == '__main__':
