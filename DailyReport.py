@@ -1,7 +1,6 @@
 #!/usr/local/bin/python
 
 import calendarEvent
-from form import Form
 import os
 import pyperclip
 import re
@@ -19,25 +18,21 @@ def main():
 def get_jobs(events):
     jobs = []
     for event in events:
-        job_name = get_job_name(event)
-        job_tasks = get_job_tasks(event)
-        job_subtotal = create_job_subtotal(job_tasks)
-        job_tax = create_job_tax(job_tasks)
-        job_total = create_job_total(job_subtotal, job_tax)
-        job = {'name': job_name,
-            'tasks': job_tasks,
-            'subtotal': job_subtotal,
-            'tax': job_tax,
-            'total': job_total}
+        job = {}
+        job['name'] = job_name(event)
+        job['tasks'] = job_tasks(event)
+        job['subtotal'] = job_subtotal(job['tasks'])
+        job['tax'] = job_tax(job['tasks'])
+        job['total'] = job_total(job['subtotal'], job['tax'])
         jobs.append(job)
     day_total = create_day_total(jobs)
     jobs.append(day_total)
     return jobs
 
-def get_job_name(event):
+def job_name(event):
     return str(event.get('summary'))
 
-def get_job_tasks(event):
+def job_tasks(event):
     tasks = []
     try:
         events_list = event.get('description').splitlines()
@@ -60,7 +55,7 @@ def get_job_tasks(event):
         tasks.append(str(task))
     return tasks
 
-def create_job_subtotal(tasks):
+def job_subtotal(tasks):
     subtotal = 0
     for task in tasks:
         try:
@@ -70,7 +65,7 @@ def create_job_subtotal(tasks):
             pass
     return subtotal
 
-def create_job_tax(tasks):
+def job_tax(tasks):
     tax = 0
     non_taxable_tasks = ['window', 'windows', 'skylight', 'skylights', 'note',
         'glass', 'mirror', 'mirrors', 'in/out', 'in/ext', 'int', 'ext', 'tax']
@@ -88,7 +83,7 @@ def create_job_tax(tasks):
     tax *= taxRate
     return round(tax, 2)
 
-def create_job_total(subtotal, tax):
+def job_total(subtotal, tax):
     return subtotal + tax
 
 def create_day_total(jobs):
