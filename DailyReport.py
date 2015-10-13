@@ -1,7 +1,6 @@
 #!/usr/local/bin/python
 
 import calendarEvent
-from form import Form
 import os
 import pyperclip
 import re
