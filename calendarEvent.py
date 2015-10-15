@@ -26,10 +26,9 @@ def get_days_events():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
-
     today = datetime.datetime.today()# - datetime.timedelta(days=0)
-    dayStart = today.replace(hour=00, minute=00, second=01).isoformat() + 'Z'
-    dayEnd = today.replace(hour=23, minute=59, second=59).isoformat() + 'Z'
+    dayStart = today.replace(hour=8, minute=00, second=00).isoformat() + 'Z'
+    dayEnd = today.replace(hour=23, minute=00, second=00).isoformat() + 'Z'
     eventsResult = service.events().list(
         calendarId='primary', timeMin=dayStart, singleEvents=True,
         orderBy='startTime', timeMax=dayEnd).execute()
@@ -68,9 +67,6 @@ def get_credentials():
             credentials = tools.run(flow, store)
         print 'Storing credentials to ' + credential_path
     return credentials
-
-def get_work_day():
-    return dayStart
 
 if __name__ == '__main__':
     main()

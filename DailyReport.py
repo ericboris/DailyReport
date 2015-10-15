@@ -1,10 +1,9 @@
 #!/usr/local/bin/python
 
 import calendarEvent
-import os
+# import os
 import pyperclip
 import re
-#import new_job
 
 # Create an email Form based on day's Calendar Events.
 
@@ -42,7 +41,8 @@ def job_tasks(event):
 	    'pressure', 'wash', 'pw', 'setup', 'set up', 'fb', 'facebook', 'ad', 'quote']
     keywords = re.compile('|'.join(task_keywords))
     for task in events_list:
-        if len(task) <= 0 or not keywords.search(str(task).lower()):
+        # ignore if len(task) is too short or too long or does not contain a keyword
+        if len(task) <= 0 or len(task) > 25 or not keywords.search(str(task).lower()):
             continue
         tasks.append(str(task))
     return tasks
