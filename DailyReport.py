@@ -25,8 +25,7 @@ def get_jobs(events):
         job['tax'] = job_tax(job['tasks'])
         job['total'] = job_total(job['subtotal'], job['tax'])
         jobs.append(job)
-    day_total = create_day_total(jobs)
-    jobs.append(day_total)
+    jobs.append(day_total(jobs))
     return jobs
 
 def job_name(event):
@@ -38,27 +37,24 @@ def job_tasks(event):
         events_list = event.get('description').splitlines()
     except AttributeError:
         return tasks
+    task_keywords = ['window', 'windows', 'int', 'ext', 'out', 'skylight' 'note',
+        'glass', 'rail', 'mirror', 'gutter', 'gutters', 'moss', 'debris', 'scrub',
+	    'pressure', 'wash', 'pw', 'setup', 'set up', 'fb', 'facebook', 'ad', 'quote']
+    keywords = re.compile('|'.join(task_keywords))
     for task in events_list:
-        task = str(task).lower()
-        # progressively filter each line in events into tasks
-        # remove empty lines
-        if len(task) <= 0:
+        if len(task) <= 0 or not keywords.search(str(task).lower()):
             continue
-        # remove lines not containing keywords
-        task_keywords = ['window', 'windows', 'int', 'ext', 'out', 'skylight' 'note',
-            'glass', 'rail', 'mirror', 'gutter', 'gutters', 'moss', 'debris', 'scrub',
-    	    'pressure', 'wash', 'pw', 'setup', 'set up', 'fb', 'facebook', 'ad']
-        keywords = re.compile('|'.join(task_keywords))
-        if not keywords.search(task):
-            continue
-        # if the line is not blank and contains a keyword
         tasks.append(str(task))
     return tasks
 
 def job_subtotal(tasks):
     subtotal = 0
+    ignore_keywords = ['quote', 'quotes']
+    keywords = re.compile('|'.join(ignore_keywords))
     for task in tasks:
         try:
+            if keywords.search(str(task).lower()):
+                continue
             price = int(re.search(r'\d+', task).group())
             subtotal += price
         except:
@@ -68,7 +64,8 @@ def job_subtotal(tasks):
 def job_tax(tasks):
     tax = 0
     non_taxable_tasks = ['window', 'windows', 'skylight', 'skylights', 'note',
-        'glass', 'mirror', 'mirrors', 'in/out', 'in/ext', 'int', 'ext', 'tax']
+        'glass', 'mirror', 'mirrors', 'in/out', 'in/ext', 'int', 'ext', 'tax',
+        'quote', 'quotes']
     for task in tasks:
         # remove non taxable tasks
         keywords = re.compile('|'.join(non_taxable_tasks))
@@ -86,7 +83,7 @@ def job_tax(tasks):
 def job_total(subtotal, tax):
     return subtotal + tax
 
-def create_day_total(jobs):
+def day_total(jobs):
     total = 0
     for job in jobs:
          total += job['subtotal']
@@ -96,6 +93,15 @@ def create_day_total(jobs):
 def create_form(jobs):
     form = ''
     for job in jobs:
+        '''
+        try:
+            for key in job:
+
+                form += '%s %s\n' % (key, job[str(key)])
+            form += '\n'
+        except KeyError:
+            pass
+        '''
         try:
             form += job['name']
             form += '\n'
@@ -109,7 +115,7 @@ def create_form(jobs):
         except KeyError:
             pass
         try:
-            if len(job['tasks']) > 1:
+            if len(job['tasks']) > 1 and job['subtotal'] != 0:
                 form += 'subtotal %s' % job['subtotal']
                 form += '\n'
         except KeyError:
